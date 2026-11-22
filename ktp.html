@@ -7,21 +7,20 @@
 <style>
 *{box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#0f172a;color:#fff;padding:16px;margin:0;text-align:center}
-h1{margin:5px 0} p{opacity:.8}
 .form{background:#fff;color:#000;border-radius:16px;padding:18px;max-width:480px;margin:15px auto;text-align:left}
-.form label{font-size:13px;font-weight:bold}
 input,select{width:100%;padding:12px;margin:6px 0 12px;border:1px solid #ccc;border-radius:10px}
 button{width:100%;padding:14px;background:#22c55e;color:#fff;border:none;border-radius:12px;font-weight:bold;font-size:16px}
+.avatar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 12px}
+.avatar{border:3px solid #e5e7eb;border-radius:14px;overflow:hidden;cursor:pointer;background:#f3f4f6}
+.avatar img{width:100%;display:block}
+.avatar.active{border-color:#22c55e;box-shadow:0 0 0 2px #22c55e}
 #hasil{display:none;max-width:480px;margin:auto}
 .ktp{background:#e8f0ff;color:#000;border-radius:14px;overflow:hidden;text-align:left;box-shadow:0 10px 30px rgba(0,0,0,.4);margin-top:15px}
 .ktp-top{background:#1d4ed8;color:#fff;padding:10px;text-align:center}
-.ktp-top b{font-size:17px;letter-spacing:1px}
 .ktp-body{display:flex;gap:12px;padding:14px}
 .foto-box{width:110px;flex-shrink:0}
 .foto-box img{width:110px;height:140px;object-fit:cover;border:2px solid #1d4ed8;background:#fff}
-.foto-box small{display:block;margin-top:4px;font-size:11px;text-align:center}
-.data{flex:1;font-size:12.5px;line-height:1.55}
-.data b{color:#1d4ed8}
+.data{flex:1;font-size:12.5px;line-height:1.6}
 .ttd{text-align:right;padding:0 14px 10px;font-size:12px}
 .ttd .sign{font-family:cursive;font-size:24px;color:#1d4ed8}
 .digital{background:#111827;color:#fff;border-radius:16px;padding:16px;margin-top:16px;text-align:left;border:1px solid #374151}
@@ -33,48 +32,21 @@ button{width:100%;padding:14px;background:#22c55e;color:#fff;border:none;border-
 </head>
 <body>
 <h1>🏡 DESA NETIZEN</h1>
-<p>Buat KTP Fisik + KTP Digital</p>
-
+<p>Pilih Karakter 3D-mu!</p>
 <div class="form">
-<label>Nama Lengkap</label>
-<input id="nama" placeholder="Contoh: Raka Netizen">
-<label>Username</label>
-<input id="user" placeholder="@kamu">
-<label>Tempat / Tanggal Lahir</label>
-<input id="ttl" placeholder="Sidoarjo, 12-12-2008">
-<label>Kota Asal</label>
-<input id="kota" placeholder="Sidoarjo">
-<label>Jenis Kelamin</label>
-<select id="jk"><option>Laki-Laki</option><option>Perempuan</option></select>
-<label>Status Netizen</label>
-<select id="role"><option>Warga Biasa</option><option>Netizen Santuy</option><option>Netizen Barbar</option><option>Lord Netizen</option><option>Admin Desa</option></select>
-<label>Foto KTP (Wajib)</label>
-<input type="file" id="fotoInput" accept="image/*">
-<label>Tanda Tangan (Ketik Nama)</label>
-<input id="ttd" placeholder="Tulis nama untuk tanda tangan">
+<label>Nama Lengkap</label><input id="nama" placeholder="Contoh: Raka Netizen">
+<label>Username</label><input id="user" placeholder="@kamu">
+<label>Tempat / Tanggal Lahir</label><input id="ttl" placeholder="Sidoarjo, 12-12-2008">
+<label>Kota Asal</label><input id="kota" placeholder="Sidoarjo">
+<label>Jenis Kelamin</label><select id="jk"><option>Laki-Laki</option><option>Perempuan</option></select>
+<label>Status Netizen</label><select id="role"><option>Warga Biasa</option><option>Netizen Santuy</option><option>Netizen Barbar</option><option>Lord Netizen</option><option>Admin Desa</option></select>
+<label>Pilih Karakter 3D Desa Netizen</label>
+<div class="avatar-grid" id="grid"></div>
+<label>Tanda Tangan (Ketik Nama)</label><input id="ttd" placeholder="Tulis nama untuk tanda tangan">
 <button onclick="buat()">BUAT KTP SEKARANG</button>
 </div>
 
 <div id="hasil">
 <div class="ktp">
 <div class="ktp-top"><b>PROVINSI JAWA TIMUR<br>KABUPATEN SIDOARJO<br>KARTU TANDA PENDUDUK NETIZEN</b></div>
-<div class="ktp-body">
-<div class="foto-box"><img id="fotoKtp" src=""><small>Foto 3x4</small></div>
-<div class="data">
-<b>NIK</b> : <span id="hNik"></span><br>
-<b>Nama</b> : <span id="hNama"></span><br>
-<b>Username</b> : <span id="hUser"></span><br>
-<b>Tempat/Tgl Lahir</b> : <span id="hTtl"></span><br>
-<b>Jenis Kelamin</b> : <span id="hJk"></span><br>
-<b>Kota</b> : <span id="hKota"></span><br>
-<b>Status</b> : <span id="hRole"></span><br>
-<b>Berlaku</b> : SEUMUR HIDUP<br>
-<b>Desa</b> : DESA NETIZEN
-</div>
-</div>
-<div class="ttd">Sidoarjo, 22-11-2026<br><div class="sign" id="hTtd">Nama</div><span id="hTtd2"></span></div>
-</div>
-
-<div class="digital">
-<div class="digital-top"><div><b style="font-size:18px">KTP DIGITAL</b><br><small>DESA NETIZEN • e-KTP</small></div><span class="badge">● TERVERIFIKASI</span></div>
-<div
+<div class="ktp
