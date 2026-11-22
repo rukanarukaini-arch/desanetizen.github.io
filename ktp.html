@@ -9,24 +9,23 @@
 body{font-family:Arial,sans-serif;background:#0f172a;color:#fff;padding:16px;margin:0;text-align:center}
 .form{background:#fff;color:#000;border-radius:16px;padding:18px;max-width:480px;margin:15px auto;text-align:left}
 input,select{width:100%;padding:12px;margin:6px 0 12px;border:1px solid #ccc;border-radius:10px}
-button{width:100%;padding:14px;background:#22c55e;color:#fff;border:none;border-radius:12px;font-weight:bold;font-size:16px}
+button{width:100%;padding:14px;background:#22c55e;color:#fff;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer}
 .avatar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 12px}
-.avatar{border:3px solid #e5e7eb;border-radius:14px;overflow:hidden;cursor:pointer;background:#f3f4f6}
-.avatar img{width:100%;display:block}
-.avatar.active{border-color:#22c55e;box-shadow:0 0 0 2px #22c55e}
+.avatar{border:3px solid #e5e7eb;border-radius:14px;padding:10px 0;font-size:38px;cursor:pointer;background:#f3f4f6;text-align:center}
+.avatar.active{border-color:#22c55e;background:#dcfce7}
 #hasil{display:none;max-width:480px;margin:auto}
-.ktp{background:#e8f0ff;color:#000;border-radius:14px;overflow:hidden;text-align:left;box-shadow:0 10px 30px rgba(0,0,0,.4);margin-top:15px}
+.ktp{background:#e8f0ff;color:#000;border-radius:14px;overflow:hidden;text-align:left;margin-top:15px}
 .ktp-top{background:#1d4ed8;color:#fff;padding:10px;text-align:center}
 .ktp-body{display:flex;gap:12px;padding:14px}
-.foto-box{width:110px;flex-shrink:0}
-.foto-box img{width:110px;height:140px;object-fit:cover;border:2px solid #1d4ed8;background:#fff}
+.foto-box{width:110px;flex-shrink:0;text-align:center}
+.foto-box div{width:110px;height:140px;background:#fff;border:2px solid #1d4ed8;font-size:70px;display:flex;align-items:center;justify-content:center}
 .data{flex:1;font-size:12.5px;line-height:1.6}
 .ttd{text-align:right;padding:0 14px 10px;font-size:12px}
 .ttd .sign{font-family:cursive;font-size:24px;color:#1d4ed8}
 .digital{background:#111827;color:#fff;border-radius:16px;padding:16px;margin-top:16px;text-align:left;border:1px solid #374151}
 .digital-top{display:flex;justify-content:space-between;align-items:center}
 .badge{background:#22c55e;color:#000;font-size:11px;font-weight:bold;padding:4px 8px;border-radius:20px}
-.digi-foto{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #22c55e}
+.digi-foto{width:64px;height:64px;border-radius:50%;background:#fff;font-size:34px;display:flex;align-items:center;justify-content:center;border:2px solid #22c55e}
 .qr{background:#fff;color:#000;width:88px;height:88px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:30px}
 </style>
 </head>
@@ -34,19 +33,78 @@ button{width:100%;padding:14px;background:#22c55e;color:#fff;border:none;border-
 <h1>🏡 DESA NETIZEN</h1>
 <p>Pilih Karakter 3D-mu!</p>
 <div class="form">
-<label>Nama Lengkap</label><input id="nama" placeholder="Contoh: Raka Netizen">
+<label>Nama Lengkap</label><input id="nama" placeholder="Contoh: Raka">
 <label>Username</label><input id="user" placeholder="@kamu">
 <label>Tempat / Tanggal Lahir</label><input id="ttl" placeholder="Sidoarjo, 12-12-2008">
 <label>Kota Asal</label><input id="kota" placeholder="Sidoarjo">
 <label>Jenis Kelamin</label><select id="jk"><option>Laki-Laki</option><option>Perempuan</option></select>
 <label>Status Netizen</label><select id="role"><option>Warga Biasa</option><option>Netizen Santuy</option><option>Netizen Barbar</option><option>Lord Netizen</option><option>Admin Desa</option></select>
-<label>Pilih Karakter 3D Desa Netizen</label>
+<label>Pilih Karakter 3D</label>
 <div class="avatar-grid" id="grid"></div>
-<label>Tanda Tangan (Ketik Nama)</label><input id="ttd" placeholder="Tulis nama untuk tanda tangan">
-<button onclick="buat()">BUAT KTP SEKARANG</button>
+<label>Tanda Tangan</label><input id="ttd" placeholder="Tulis nama">
+<button id="btnBuat" type="button">BUAT KTP SEKARANG</button>
 </div>
 
 <div id="hasil">
 <div class="ktp">
 <div class="ktp-top"><b>PROVINSI JAWA TIMUR<br>KABUPATEN SIDOARJO<br>KARTU TANDA PENDUDUK NETIZEN</b></div>
-<div class="ktp
+<div class="ktp-body">
+<div class="foto-box"><div id="fotoKtp">🧑</div><small>Karakter 3D</small></div>
+<div class="data"><b>NIK</b> : <span id="hNik"></span><br><b>Nama</b> : <span id="hNama"></span><br><b>Username</b> : <span id="hUser"></span><br><b>Tempat/Tgl Lahir</b> : <span id="hTtl"></span><br><b>Jenis Kelamin</b> : <span id="hJk"></span><br><b>Kota</b> : <span id="hKota"></span><br><b>Status</b> : <span id="hRole"></span><br><b>Berlaku</b> : SEUMUR HIDUP</div>
+</div>
+<div class="ttd">Sidoarjo, 22-11-2026<br><div class="sign" id="hTtd">Nama</div><span id="hTtd2"></span></div>
+</div>
+<div class="digital">
+<div class="digital-top"><div><b style="font-size:18px">KTP DIGITAL</b><br><small>DESA NETIZEN • e-KTP</small></div><span class="badge">● TERVERIFIKASI</span></div>
+<div style="display:flex;gap:12px;margin-top:14px;align-items:center">
+<div class="digi-foto" id="fotoDigi">🧑</div>
+<div><b id="dNama" style="font-size:17px">Nama</b><br><span id="dUser">@user</span><br><small id="dRole">Status</small><br><small>NIK: <span id="dNik"></span></small></div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px"><div><small>Scan untuk verifikasi</small><br><b>AKTIF</b></div><div class="qr">📱</div></div>
+</div>
+<p style="color:#4ade80"><b>✅ KTP Berhasil Dibuat!</b><br>Screenshot KTP-mu!</p>
+</div>
+
+<script>
+var avatars = ["🧑","👩","👦","👧","🧔","👱‍♀️","🧑‍🎤","👨‍💻"];
+var selected = avatars[0];
+var grid = document.getElementById('grid');
+avatars.forEach(function(emoji, i){
+var d = document.createElement('div');
+d.className = 'avatar' + (i==0 ? ' active' : '');
+d.innerText = emoji;
+d.onclick = function(){ selected = emoji; var all = document.querySelectorAll('.avatar'); for(var j=0;j<all.length;j++){all[j].classList.remove('active');} d.classList.add('active'); };
+grid.appendChild(d);
+});
+document.getElementById('btnBuat').addEventListener('click', function(){
+var nama = document.getElementById('nama').value;
+var user = document.getElementById('user').value;
+var ttl = document.getElementById('ttl').value;
+var kota = document.getElementById('kota').value;
+var jk = document.getElementById('jk').value;
+var role = document.getElementById('role').value;
+var ttd = document.getElementById('ttd').value || nama;
+if(!nama || !user || !ttl || !kota){ alert('Isi semua dulu, Rek!'); return; }
+var nik = '3571' + Math.floor(1000000000 + Math.random()*9000000000);
+document.getElementById('hNik').innerText = nik;
+document.getElementById('dNik').innerText = nik;
+document.getElementById('hNama').innerText = nama;
+document.getElementById('dNama').innerText = nama;
+document.getElementById('hUser').innerText = user;
+document.getElementById('dUser').innerText = user;
+document.getElementById('hTtl').innerText = ttl;
+document.getElementById('hJk').innerText = jk;
+document.getElementById('hKota').innerText = kota;
+document.getElementById('hRole').innerText = role;
+document.getElementById('dRole').innerText = role;
+document.getElementById('hTtd').innerText = ttd;
+document.getElementById('hTtd2').innerText = nama;
+document.getElementById('fotoKtp').innerText = selected;
+document.getElementById('fotoDigi').innerText = selected;
+var h = document.getElementById('hasil');
+h.style.display = 'block';
+h.scrollIntoView();
+});
+</script>
+</body>
+</html> 
