@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>DUNIA VIRTUAL 3D - DESA NETIZEN</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;overflow:hidden;font-family:Arial,sans-serif;background:#000}
+#game{width:100vw;height:100vh;display:block}
+.top{position:fixed;top:0;left:0;right:0;background:rgba(0,0,0,.7);color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;z-index:10}
+.top b{font-size:15px}
+.top a{background:#22c55e;color:#fff;padding:7px 12px;border-radius:20px;text-decoration:none;font-size:13px;font-weight:bold}
+.info{position:fixed;top:52px;left:10px;background:rgba(255,255,255,.9);padding:8px 12px;border-radius:12px;font-size:12px;z-index:10}
+.joystick{position:fixed;bottom:20px;left:20px;width:120px;height:120px;background:rgba(255,255,255,.25);border:2px solid #fff;border-radius:50%;z-index:10}
+.knob{position:absolute;left:35px;top:35px;width:50px;height:50px;background:#fff;border-radius:50%;box-shadow:0 4px 10px rgba(0,0,0,.4)}
+.btns{position:fixed;bottom:25px;right:16px;display:flex;gap:10px;z-index:10}
+.btns button{width:60px;height:60px;border-radius:50%;border:none;font-size:24px;background:#fff;box-shadow:0 4px 10px rgba(0,0,0,.3)}
+#chat{position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:#fff;padding:8px 14px;border-radius:20px;font-size:13px;display:none;z-index:10}
+</style>
+</head>
+<body>
+<div class="top"><b>🌍 DUNIA NETIZEN 3D</b><a href="index.html">🏠 Desa</a></div>
+<div class="info">👤 <b id="namaWarga">Tamu</b> <span id="emojiWarga">🧑</span><br>🕹️ Geser joystick kiri buat jalan<br>📦 Lahan masih kosong! Mau dibangun apa?</div>
+<canvas id="game"></canvas>
+<div class="joystick" id="joy"><div class="knob" id="knob"></div></div>
+<div class="btns">
+<button onclick="lompat()">⬆️</button>
+<button onclick="putarKamera()">🔄</button>
+</div>
+<div id="chat">Halo!</div>
+
+<script>
+let scene = new THREE.Scene();
+scene.background = new THREE.Color(0x87ceeb);
+scene.fog = new THREE.Fog(0x87ceeb, 30, 90);
+let camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 200);
+let renderer = new THREE.WebGLRenderer({canvas: document.getElementById('game'), antialias:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+
+// LAMPU
+let light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(20,30,10);
+light.castShadow = true;
+scene.add(light);
+scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+
+// TANAH / LAHAN KOSONG - INI LAHANMU!
+let tanah = new THREE.Mesh(new THREE.PlaneGeometry(100,100), new THREE.MeshLambertMaterial({color:0x4ade80}));
+tanah.rotation.x = -Math.PI/2;
+tanah.receiveShadow = true;
+scene.add(tanah);
+
+// JALAN
+let jalan = new THREE.Mesh(new THREE.PlaneGeometry(6,100), new THREE.MeshLambertMaterial({color:0x94a3b8}));
+jalan.rotation.x = -Math.PI/2; jalan.position.y = 0.01;
+scene.add(jalan);
+let jalan2 = new THREE.Mesh(new THREE.PlaneGeometry(100,6), new THREE.MeshLambertMaterial({color:0x94a3b8}));
+jalan2.rotation.x = -Math.PI/2; jalan2.position.y = 0.01;
+scene.add(jalan2);
+
+// FUNGSI BIKIN RUMAH
+function rumah(x,z,warna,emoji){
+let g = new THREE.Group();
+let badan = new THREE.Mesh(new THREE.BoxGeometry(6,4,6), new THREE.MeshLambertMaterial({color:warna}));
+badan.position.y=2; badan.castShadow=true; g.add(badan);
+let atap = new THREE.Mesh(new THREE.ConeGeometry(5,3,4), new THREE.MeshLambertMaterial({color:0xef4444}));
+atap.position.y=5.5; atap.rotation.y=Math.PI/4; atap.castShadow=true; g.add(atap);
+let pintu = new THREE.Mesh(new THREE.BoxGeometry(1.5,2.5,0.2), new THREE.MeshLambertMaterial({color:0x92400e}));
+pintu.position.set(0,1.25,3.1); g.add(pintu);
+g.position.set(x,0,z);
+scene.add(g);
+}
+// RUMAH AWAL - NANTI BISA DITAMBAH
+rumah(-12, -12, 0xffffff);
+rumah(12, -12, 0xfef3c7);
+rumah(-12, 12, 0xdbeafe);
+rumah(12, 12, 0xfce7f3);
+
+// POHON
+function pohon(x,z){
+let batang = new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.5,2), new THREE.MeshLambertMaterial({color:0x92400e}));
+batang.position.set(x,1,z); scene.add(batang);
+let daun = new THREE.Mesh(new THREE.SphereGeometry(2,8,8), new THREE.MeshLambertMaterial({color:0x16a34a}));
+daun.position.set(x,3.5,z); daun.castShadow=true; scene.add(daun);
+}
+pohon(-8,0); pohon(8,0); pohon(0,-8); pohon(0,8); pohon(-18,0); pohon(18,0);
+
+// KARAKTER KAMU
+let player = new THREE.Group();
+let badan = new THREE.Mesh(new THREE.BoxGeometry(1,1.5,0.6), new THREE.MeshLambertMaterial({color:0x2563eb}));
+badan.position.y=1; badan.castShadow=true; player.add(badan);
+let kepala = new THREE.Mesh(new THREE.SphereGeometry(0.6,16,16), new THREE.MeshLambertMaterial({color:0xfbbf24}));
+kepala.position.y=2.3; kepala.castShadow=true; player.add(kepala);
+let topi = new THREE.Mesh(new THREE.CylinderGeometry(0.65,0.65,0.2), new THREE.MeshLambertMaterial({color:0xdc2626}));
+topi.position.y=2.8; player.add(topi);
+scene.add(player);
+player.position.set(0,0,5);
+
+// WARGA LAIN DARI KTP
+let warga = JSON.parse(localStorage.getItem('wargaDesa') || '[]');
+if(warga.length>0){
+let w = warga[warga.length-1];
+document.getElementById('namaWarga').innerText = w.nama;
+document.getElementById('emojiWarga').innerText = w.emoji;
+}
+// Gerak
+let keys = {};
+let velY = 0;
+let joyX=0, joyY=0;
+let camAngle = 0;
+document.addEventListener('keydown', e=> keys[e.key.toLowerCase()]=true);
+document.addEventListener('keyup', e=> keys[e.key.toLowerCase()]=false);
+
+let joy = document.getElementById('joy');
+let knob = document.getElementById('knob');
+let dragging=false;
+joy.addEventListener('touchstart', e=>{dragging=true;}, {passive:true});
+joy.addEventListener('touchmove', e=>{
+if(!dragging) return;
+let r = joy.getBoundingClientRect();
+let t = e.touches[0];
+let dx = t.clientX - (r.left+60);
+let dy = t.clientY - (r.top+60);
+dx = Math.max(-35, Math.min(35, dx));
+dy = Math.max(-35, Math.min(35, dy));
+knob.style.left = (35+dx)+'px';
+knob.style.top = (35+dy)+'px';
+joyX = dx/35; joyY = dy/35;
+}, {passive:true});
+joy.addEventListener('touchend', ()=>{dragging=false; knob.style.left='35px'; knob.style.top='35px'; joyX=0; joyY=0;});
+
+function lompat(){ if(player.position.y<=0.1) velY=6; let c=document.getElementById('chat'); c.style.display='block'; c.innerText='Halo! Saya '+document.getElementById('namaWarga').innerText; setTimeout(()=>c.style.display='none',2000); }
+function putarKamera(){ camAngle += Math
